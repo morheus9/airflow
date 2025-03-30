@@ -9,7 +9,7 @@ resource "yandex_vpc_network" "mynet" {
 
 resource "yandex_vpc_subnet" "mysubnet" {
   name           = "k8s-subnet"
-  v4_cidr_blocks = ["10.1.0.0/24"] # Уменьшенный CIDR
+  v4_cidr_blocks = ["10.1.0.0/24"]
   zone           = "ru-central1-a"
   network_id     = yandex_vpc_network.mynet.id
 }
@@ -17,7 +17,7 @@ resource "yandex_vpc_subnet" "mysubnet" {
 ### KMS КЛЮЧ ###
 resource "yandex_kms_symmetric_key" "kms-key" {
   name              = "k8s-secrets-key"
-  default_algorithm = "AES_256" # Улучшенная безопасность
+  default_algorithm = "AES_256"
   rotation_period   = "8760h"
 }
 
@@ -127,7 +127,7 @@ resource "yandex_vpc_security_group" "k8s-sg" {
   ingress {
     protocol       = "TCP"
     description    = "K8S API Secure Port"
-    v4_cidr_blocks = ["192.0.2.0/24"] # Замените на ваш IP-диапазон
+    v4_cidr_blocks = [var.api_access_cidr]
     port           = 6443
   }
 
@@ -153,11 +153,11 @@ resource "yandex_vpc_security_group" "k8s-sg" {
   ingress {
     protocol       = "TCP"
     description    = "NodePort Services"
-    v4_cidr_blocks = ["203.0.113.0/24"] # Замените на доверенные IP
+    v4_cidr_blocks = [var.nodeport_access_cidr]
     from_port      = 30000
     to_port        = 32767
   }
-
+  
   # Outbound Traffic
   egress {
     protocol       = "ANY"
