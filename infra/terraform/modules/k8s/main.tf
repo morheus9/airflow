@@ -89,7 +89,6 @@ resource "yandex_kubernetes_cluster" "k8s-zonal" {
 resource "yandex_kubernetes_node_group" "k8s-nodes" {
   cluster_id  = yandex_kubernetes_cluster.k8s-zonal.id
   name        = "k8s-worker-nodes"
-  version     = yandex_kubernetes_cluster.k8s-zonal.version
   
   instance_template {
     platform_id = "standard-v2"

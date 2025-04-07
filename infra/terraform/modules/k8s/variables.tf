@@ -14,11 +14,11 @@ variable "folder_id" {
 variable "api_access_cidr" {
   description = "CIDR block for Kubernetes API access"
   type        = string
-  default = ["192.0.2.0/24"]
+  default = "192.0.2.0/24"
 }
 
 variable "nodeport_access_cidr" {
   description = "CIDR block for NodePort services access"
   type        = string
-  default = ["203.0.113.0/24"]
+  default = "203.0.113.0/24"
 }

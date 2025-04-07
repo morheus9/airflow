@@ -15,7 +15,11 @@ curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 yc init
 ```
 3. Check the variables of modules
-4. Set up a teraform by specifying a provider:
+4. Install Terraform
+```
+sudo snap install terraform --classic
+```
+5. Set up a teraform by specifying a provider:
 ```
 sudo nano ~/.terraformrc
 ```
@@ -30,24 +34,27 @@ provider_installation {
   }
 }
 ```
-5. Export envs:
+6. Export envs:
 ```
 export TF_VAR_cloud_id=$(yc config get cloud-id)
 export TF_VAR_folder_id=$(yc config get folder-id)
 export TF_VAR_token=$(yc iam create-token)
 ```
-6. Create s3 for state:
+7. Comment backend in the **versions.tf**
+8. Create s3 for state:
 ```
+cd ./infra/terraform
 terraform init -backend=false 
-terraform plan -target=module.s3_bucket
+terraform plan -target=module.s3_bucket -backend=false 
 terraform apply -target=module.s3_bucket
 ```
-7. Export the credits of your service account with access to S3 bucket before launching tf:
+9. Export the credits of your service account with access to S3 bucket before launching tf:
 ```
 export AWS_ACCESS_KEY_ID=access_key_example
 export AWS_SECRET_ACCESS_KEY=secret_key_example
 ```
-8. Migrate state to s3 bucket and create managed k8s cluster:
+10. Uncomment backend in the **versions.tf**
+11. Migrate state to s3 bucket and create managed k8s cluster:
 ```
 terraform init -migrate-state
 terraform plan
