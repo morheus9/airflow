@@ -1,4 +1,4 @@
-# Terraform modules
+## Terraform modules
 
 - [Yandex Object Storage](https://yandex.cloud/ru/docs/storage)
 - [Yandex Managed Service for Kubernetes](https://yandex.cloud/ru/docs/managed-kubernetes)
@@ -10,7 +10,7 @@
 ```
 curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 ```
-2. Log in via the Yandex Cloud console under the required service account:
+2. Get [OAuth token](https://oauth.yandex.ru/verification_code) and log in via the Yandex Cloud console under the required service account:
 ```
 yc init
 ```

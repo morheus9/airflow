@@ -86,33 +86,33 @@ resource "yandex_kubernetes_cluster" "k8s-zonal" {
 }
 
 ### ГРУППА УЗЛОВ ###
-resource "yandex_kubernetes_node_group" "k8s-nodes" {
-  cluster_id  = yandex_kubernetes_cluster.k8s-zonal.id
-  name        = "k8s-worker-nodes"
-  
+resource "yandex_kubernetes_node_group" "k8s-node_groups" {
+  cluster_id = yandex_kubernetes_cluster.k8s-zonal.id
+  name       = "yc-k8s-ng-01"
   instance_template {
     platform_id = "standard-v2"
-    
     resources {
       memory = 4
       cores  = 2
     }
-
     boot_disk {
       type = "network-ssd"
       size = 64
     }
-
     network_interface {
       subnet_ids = [yandex_vpc_subnet.mysubnet.id]
       nat        = true # Доступ в интернет для узлов
     }
   }
-
   scale_policy {
-    fixed_scale {
-      size = 2 # Кол-во узлов
+    auto_scale {
+      min     = 2
+      max     = 4
+      initial = 2
     }
+    //fixed_scale {
+    //  size = 3
+    //}
   }
 }
 
@@ -156,7 +156,7 @@ resource "yandex_vpc_security_group" "k8s-sg" {
     from_port      = 30000
     to_port        = 32767
   }
-  
+
   # Outbound Traffic
   egress {
     protocol       = "ANY"
