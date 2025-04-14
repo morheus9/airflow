@@ -6,7 +6,7 @@
 - [Setup terraform backend](https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-state-storage)
 - [K8s from terraform](https://yandex.cloud/ru/docs/managed-kubernetes/operations/kubernetes-cluster/kubernetes-cluster-create)
 
-1. Install yc cli:
+1. Install **yc** cli:
 ```
 curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 ```
