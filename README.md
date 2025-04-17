@@ -58,5 +58,5 @@ export AWS_SECRET_ACCESS_KEY=secret_key_example
 ```
 terraform init -migrate-state
 terraform plan
-terraform apply
+terraform apply -target=module.k8s
 ```

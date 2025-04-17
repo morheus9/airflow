@@ -5,9 +5,9 @@ module "s3_bucket" {
   token       = var.token
 }
 
-module "k8s" {
-  source = "./modules/k8s"
-}
+//module "k8s" {
+//  source = "./modules/k8s"
+//}
 
 output "s3_bucket_id" {
   description = "The ID of the S3 bucket"
