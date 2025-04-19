@@ -1,13 +1,13 @@
 variable "bucket_name" {
   description = "Name of the S3 bucket"
   type        = string
-  default     = "my-s3"
+  default     = "s3-test"
 }
 
 variable "region" {
   description = "Region for the S3 bucket"
   type        = string
-  default     = "ru-central1" # Замените на нужный вам регион
+  default     = "ru-central1"
 }
 
 variable "token" {

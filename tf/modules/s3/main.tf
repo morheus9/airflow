@@ -1,16 +1,16 @@
 resource "yandex_storage_bucket" "bucket" {
-  bucket     = var.bucket_name
-  max_size   = 1073741824  # 1 ГБ в байтах
-  folder_id  = var.folder_id
-  acl        = "private"   # Приватный доступ
+  bucket    = var.bucket_name
+  max_size  = 1073741824 # 1 GB in bytes
+  folder_id = var.folder_id
+  acl       = "private" # Private access
 
-  # Версионирование (чтобы откатывать состояние)
+  # Versioning (to roll back the state)
   versioning {
     enabled = true
   }
 
-# Защита от случайного удаления
-#  lifecycle {
-#    prevent_destroy = true
-#  }
+  # Protection against accidental deletion
+  #  lifecycle {
+  #    prevent_destroy = true
+  #  }
 }

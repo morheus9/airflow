@@ -10,7 +10,7 @@
 ```
 curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 ```
-2. Get OAuth token and log in via the Yandex Cloud console under the required service account:
+2. Get *OAuth* token and log in via the Yandex Cloud console under the required service account:
 ```
 yc init
 ```
@@ -40,23 +40,42 @@ export TF_VAR_cloud_id=$(yc config get cloud-id)
 export TF_VAR_folder_id=$(yc config get folder-id)
 export TF_VAR_token=$(yc iam create-token)
 ```
-7. Comment backend in the **versions.tf**
-8. Create s3 for state:
+- Comment backend in the **versions.tf**
+### Create s3 for state:
 ```
-cd ./terraform
-terraform init -backend=false 
-terraform plan -target=module.s3_bucket -backend=false 
+cd ./tf
+terraform init
+terraform plan
 terraform apply -target=module.s3_bucket
 ```
-9. Export the credits of your service account with access to S3 bucket before launching tf:
+- Export the credits of your service account with access to S3 bucket before launching tf:
 ```
 export AWS_ACCESS_KEY_ID=access_key_example
 export AWS_SECRET_ACCESS_KEY=secret_key_example
 ```
-10. Uncomment backend in the **versions.tf**
-11. Migrate state to s3 bucket and create managed k8s cluster:
+- Uncomment backend in the **versions.tf**
+### Create k8s
+- Migrate state to *s3* bucket and create for example *managed k8s cluster*:
 ```
 terraform init -migrate-state
 terraform plan
-terraform apply -target=module.k8s
+terraform apply -target=module.kube
+terraform apply -target=module.addons
 ```
+- Connect to cluster by connect string from *output*
+- Install test nginx and check
+```
+cd tf/modules/kube/nginx.yaml
+kubectl apply -f nginx.yaml
+kubectl get ingress nginx-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+```
+### Create VMs
+```
+terraform init -migrate-state
+terraform plan
+terraform apply -target=module.vm
+```
+### Create Network
+terraform init -migrate-state
+terraform plan
+terraform apply -target=module.network

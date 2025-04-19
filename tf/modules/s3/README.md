@@ -1,58 +1,42 @@
-Данный модуль Terraform предназначен для развертывания виртуальных машин. 
+This Terraform module is designed for deploying virtual machines. 
 
-Для корректной работы модуля необходимо установить следующие зависимости:
-
-Terraform: 
+The module supports the following parameters:
 ```
->= v1.9.4.
-```
-Провайдер: 
-```
-yandex-cloud/yandex
-required_version = ">= 0.13"
-```
-Модуль поддерживает следующие параметры:
-```
-zone
-  description = "Instance availability zone"
+variable "bucket_name" {
+  description = "Name of the S3 bucket"
   type        = string
-  default     = "ru-central1-a"
+  default     = "s3-test"
+}
 
-username
-  description = "The username to create on the VM"
+variable "region" {
+  description = "Region for the S3 bucket"
   type        = string
-  default     = "ansible"
-
-platform_id
-  description = "Platform ID for the Yandex Compute Instance"
-  type        = string
-
-scheduling_policy
-  description = "Scheduling policy for the Yandex Compute Instance"
-  type        = string
-
-disk_size
-  description = "Size of the boot disk in GB"
-  type        = number
-```
-
-После выполнения модуль выводит:
-```
-vm_name - Имя создаваемой машины
-zone - Зона сети
-subnet_id - id Создваваемой сети
-external_ip - Внешний IP адрес
-created_user - Созданный пользователь
-```
-
-Пример использования модуля:
-```
-module "tf-yc-instance" {
-  username          = var.username
-  source            = "./modules/tf-yc-instance"
-  zone              = var.zone
-  platform_id       = var.platform_id  # Ensure this is included
-  disk_size         = var.disk_size     # Ensure this is included
-  scheduling_policy = var.scheduling_policy  # Ensure this is included
+  default     = "ru-central1"
 }
 ```
+
+After execution, the module outputs:
+```
+output "bucket_id" {
+  description = "The ID of the S3 bucket"
+  value       = yandex_storage_bucket.bucket.id
+}
+
+output "bucket_name" {
+  description = "The name of the S3 bucket"
+  value       = yandex_storage_bucket.bucket.bucket
+}
+
+output "bucket_url" {
+  description = "The URL of the S3 bucket"
+  value       = "https://${yandex_storage_bucket.bucket.bucket}.storage.yandexcloud.net/"
+}
+```
+Example of using the module:
+```
+module "s3_bucket" {
+  source      = "./modules/s3"
+  bucket_name = "my-s31111111333"
+  region      = var.region
+  token       = var.token
+}

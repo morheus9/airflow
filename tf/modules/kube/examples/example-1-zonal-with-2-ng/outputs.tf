@@ -1,22 +1,3 @@
-# S3
-
-output "s3_bucket_id" {
-  description = "The ID of the S3 bucket"
-  value       = module.s3_bucket.bucket_id
-}
-
-output "s3_bucket_name" {
-  description = "The name of the S3 bucket"
-  value       = module.s3_bucket.bucket_name
-}
-
-output "s3_bucket_url" {
-  description = "The URL of the S3 bucket"
-  value       = module.s3_bucket.bucket_url
-}
-
-# K8s
-
 output "kube_cluster_id" {
   description = "Kubernetes cluster ID."
   value       = try(module.kube.cluster_id, null)
@@ -45,10 +26,4 @@ output "node_account_name" {
 output "service_account_name" {
   description = "IAM service account name"
   value       = module.kube.service_account_name
-}
-
-# VMs
-
-output "vm_ip" {
-  value = module.instance.vm_ip_address
 }
