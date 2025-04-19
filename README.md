@@ -10,18 +10,18 @@
 ```
 curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 ```
-2. Get [OAuth token](https://oauth.yandex.ru/verification_code) and log in via the Yandex Cloud console under the required service account:
+2. Get OAuth token and log in via the Yandex Cloud console under the required service account:
 ```
 yc init
 ```
 3. Check the variables of modules
 4. Install Terraform
 ```
-sudo snap install terraform --classic
+snap install terraform --classic
 ```
 5. Set up a teraform by specifying a provider:
 ```
-sudo nano ~/.terraformrc
+nano ~/.terraformrc
 ```
 ```
 provider_installation {
@@ -43,7 +43,7 @@ export TF_VAR_token=$(yc iam create-token)
 7. Comment backend in the **versions.tf**
 8. Create s3 for state:
 ```
-cd ./infra/terraform
+cd ./terraform
 terraform init -backend=false 
 terraform plan -target=module.s3_bucket -backend=false 
 terraform apply -target=module.s3_bucket
