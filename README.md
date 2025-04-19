@@ -76,6 +76,8 @@ terraform plan
 terraform apply -target=module.vm
 ```
 ### Create Network
+```
 terraform init -migrate-state
 terraform plan
 terraform apply -target=module.network
+```
