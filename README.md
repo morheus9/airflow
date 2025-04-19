@@ -41,7 +41,7 @@ export TF_VAR_folder_id=$(yc config get folder-id)
 export TF_VAR_token=$(yc iam create-token)
 ```
 - Comment backend in the **versions.tf**
-### Create s3 for state:
+### Create s3 for state
 ```
 cd ./tf
 terraform init
