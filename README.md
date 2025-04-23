@@ -58,7 +58,6 @@ export AWS_SECRET_ACCESS_KEY=secret_key_example
 - Migrate state to *s3* bucket and create for example *managed k8s cluster*:
 ```
 terraform init -migrate-state
-terraform plan
 terraform apply -target=module.kube
 terraform apply -target=module.addons
 ```
@@ -72,12 +71,10 @@ kubectl get ingress nginx-ingress -o jsonpath='{.status.loadBalancer.ingress[0].
 ### Create VMs
 ```
 terraform init -migrate-state
-terraform plan
-terraform apply -target=module.vm
+terraform apply -target=module.instance
 ```
 ### Create Network
 ```
 terraform init -migrate-state
-terraform plan
 terraform apply -target=module.network
 ```
