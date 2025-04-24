@@ -40,41 +40,31 @@ export TF_VAR_cloud_id=$(yc config get cloud-id)
 export TF_VAR_folder_id=$(yc config get folder-id)
 export TF_VAR_token=$(yc iam create-token)
 ```
-- Comment backend in the **versions.tf**
-### Create s3 for state
+7. Create s3 for state backend
 ```
-cd ./tf
+cd ./tf/modules/s3
 terraform init
 terraform plan
-terraform apply -target=module.s3_bucket
+terraform apply
 ```
-- Export the credits of your service account with access to S3 bucket before launching tf:
+8. Export the credentials of your service account with access to S3 bucket:
 ```
-export AWS_ACCESS_KEY_ID=access_key_example
-export AWS_SECRET_ACCESS_KEY=secret_key_example
+export AWS_ACCESS_KEY_ID=$(terraform output -raw aws_access_key_id)
+export AWS_SECRET_ACCESS_KEY=$(terraform output -raw aws_secret_access_key)
 ```
-- Uncomment backend in the **versions.tf**
-### Create k8s
-- Migrate state to *s3* bucket and create for example *managed k8s cluster*:
+9. Change backend and create other modules
 ```
-terraform init -migrate-state
-terraform apply -target=module.kube
-terraform apply -target=module.addons
+cd ../..
+terraform init -reconfigure
+terraform apply
 ```
-- Connect to cluster by connect string from *output*
-- Install test nginx and check
+10. Connect to cluster by connect string from *output*
+```
+$(terraform output -raw internal_cluster_cmd_str)
+```
+11. Install test nginx and check
 ```
 cd tf/modules/kube/nginx.yaml
 kubectl apply -f nginx.yaml
 kubectl get ingress nginx-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-```
-### Create VMs
-```
-terraform init -migrate-state
-terraform apply -target=module.instance
-```
-### Create Network
-```
-terraform init -migrate-state
-terraform apply -target=module.network
 ```

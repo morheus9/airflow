@@ -1,9 +1,3 @@
-module "s3_bucket" {
-  source      = "./modules/s3"
-  bucket_name = "my-s31111111333"
-  region      = var.region
-  token       = var.token
-}
 module "network" {
   source = "./modules/network"
   zone   = var.zone

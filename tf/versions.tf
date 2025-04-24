@@ -15,19 +15,19 @@ terraform {
       version = "> 3.3"
     }
   }
-  //backend "s3" {
-  //  endpoints = {
-  //    s3 = "https://storage.yandexcloud.net"
-  //  }
-  //  bucket = "my-s3"
-  //  region = "ru-central1"
-  //  key    = "terraform.tfstate"
-
-  //  skip_region_validation      = true
-  //  skip_credentials_validation = true
-  //  skip_requesting_account_id  = true
-  //  skip_s3_checksum            = true
-  //}
+  backend "s3" {
+    endpoints = {
+      s3 = "https://storage.yandexcloud.net"
+    }
+    bucket = "terraform-state-backend"
+    region = "ru-central1"
+    key    = "terraform.tfstate"
+    # dynamodb_table = "terraform-locks"  # Если используется блокировка
+    skip_region_validation      = true
+    skip_credentials_validation = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
+  }
 }
 
 provider "local" {}
