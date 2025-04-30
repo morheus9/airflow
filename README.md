@@ -4,6 +4,7 @@ This repository provides a Terraform template for deploying infrastructure on Ya
 - Yandex Object Storage (S3)
 - Yandex Managed Service for Kubernetes (K8S)
 - Virtual Machines
+- Network Configuration
 
 ## Table of Contents
 
