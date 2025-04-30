@@ -13,7 +13,7 @@ This repository provides a Terraform template for deploying infrastructure on Ya
 - [Configuration](#configuration)
 - [Usage](#usage)
   - [S3 Bucket Creation](#s3-bucket-creation)
-  - [Creation of basic infrastructure modules](#сreation-of-basic-infrastructure-modules)
+  - [Creation of basic infrastructure modules](#creation-of-basic-infrastructure-modules)
   - [Deploying Nginx on Kubernetes and Getting the Public IP](#deploying-nginx-on-kubernetes-and-getting-the-public-ip)
   - [Virtual Machine Creation](#virtual-machine-creation)
 - [Variables](#variables)
