@@ -198,38 +198,11 @@ This example shows how to deploy a simple Nginx web server on the Kubernetes clu
 
 ### Connect to Virtual Machine
 
-This module creates a virtual machine in Yandex Compute Cloud.
-
-1.  **Navigate to the root directory or your instance module directory:**  If you have a separate module using the `instance` module, navigate to that.  Otherwise, you can adapt the root `tf` directory.
-
-2.  **Make sure you have the required variables defined.**  See `tf/modules/instance/README.md` for details. You'll need a VPC network and subnet. You may need to create those separately if you don't already have them. Also, make sure you have a public SSH key available.
-
-3.  **Initialize Terraform:**
-
-    ```bash
-    terraform init
-    ```
-
-4.  **Plan the deployment:**
-
-    ```bash
-    terraform plan
-    ```
-
-5.  **Apply the configuration:**
-
-    ```bash
-    terraform apply
-    ```
-
-6.  **Connect to the VM:** After the deployment is complete, connect to the virtual machine using SSH.
+- **Connect to the VM:** After the deployment is complete, connect to the virtual machine using SSH.
 
     ```bash
     ssh $(terraform output -raw user)@$(terraform output -raw external_ip) -i ~/.ssh/tf-cloud-init
     ```
-
-    Replace `~/.ssh/tf-cloud-init` with the path to your SSH private key.  The username is typically defined in the variables, such as `ansible`.
-
 ## Variables
 
 The following environment variables are used by the Terraform modules:
