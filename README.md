@@ -153,13 +153,12 @@ This module deploys a Kubernetes cluster in Yandex Managed Service for Kubernete
 
 ### Connecting to the Kubernetes Cluster
 
-1.  **Get the cluster connection string:** After the deployment is complete, retrieve the command to connect to the Kubernetes cluster.
-
+ **Get the cluster connection string:** After the deployment is complete, retrieve the command to connect to the Kubernetes cluster.
+ 
     ```bash
-      eval "$(terraform output -raw internal_cluster_cmd_str)"
+    eval "$(terraform output -raw internal_cluster_cmd_str)"
     ```
-
-2.  **Execute the command:** Copy and paste the output of the above command into your terminal. This configures `kubectl` to communicate with your Yandex Managed Kubernetes cluster.
+This configures `kubectl` to communicate with your Yandex Managed Kubernetes cluster.
 
 ### Deploying Nginx on Kubernetes and Getting the Public IP
 
