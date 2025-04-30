@@ -201,7 +201,7 @@ This example shows how to deploy a simple Nginx web server on the Kubernetes clu
 - **Connect to the VM:** After the deployment is complete, connect to the virtual machine using SSH.
 
     ```bash
-    ssh $(terraform output -raw user)@$(terraform output -raw external_ip) -i ~/.ssh/tf-cloud-init
+    ssh $(terraform output -raw user)@$(terraform output -raw external_ip)
     ```
 ## Variables
 
