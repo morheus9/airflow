@@ -122,7 +122,7 @@ This module creates an S3 bucket in Yandex Object Storage for storing Terraform 
     export AWS_SECRET_ACCESS_KEY=$(terraform output -raw aws_secret_access_key)
     ```
 
-### Creation of basic infrastructure modules
+## Creation of basic infrastructure modules
 
 This module deploys a Kubernetes cluster in Yandex Managed Service for Kubernetes.
 
@@ -249,6 +249,16 @@ terraform plan -var="zone=ru-central1-a"
 Or, use a tfvars file:
 ```bash
 terraform apply -var-file="testing.tfvars"
+```
+
+## Clean Up
+To destroy the infrastructure created by Terraform, use the following command:
+
+```bash
+terraform destroy
+```
+If you used a tfvars file, specify it during the destroy operation:
+```bash
 terraform destroy -var-file="testing.tfvars"
 ```
 Resourses:
