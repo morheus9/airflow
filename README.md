@@ -1,70 +1,262 @@
-## Terraform modules
+# Terraform Template for Yandex Cloud Infrastructure
 
+This repository provides a Terraform template for deploying infrastructure on Yandex Cloud. It includes modules for creating and managing various resources, such as:
+- Yandex Object Storage (S3)
+- Yandex Managed Service for Kubernetes (K8S)
+- Virtual Machines
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [S3 Bucket Creation](#s3-bucket-creation)
+  - [Kubernetes Cluster Creation](#kubernetes-cluster-creation)
+  - [Connecting to the Kubernetes Cluster](#connecting-to-the-kubernetes-cluster)
+  - [Deploying Nginx on Kubernetes and Getting the Public IP](#deploying-nginx-on-kubernetes-and-getting-the-public-ip)
+  - [Virtual Machine Creation](#virtual-machine-creation)
+- [Variables](#variables)
+- [Examples](#examples)
+- [Clean Up](#clean-up)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+1.  **Yandex Cloud Account:** You'll need an active Yandex Cloud account. If you don't have one, sign up at [Yandex Cloud](https://yandex.cloud/).
+2.  **YC CLI:** Install the Yandex Cloud Command Line Interface (YC CLI). Follow the instructions in the [Yandex Cloud documentation](https://yandex.cloud/ru/docs/cli/quickstart).
+
+    ```bash
+    curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+    ```
+
+3.  **Terraform:** Install Terraform.  A common method is using `snap`.
+
+    ```bash
+    snap install terraform --classic
+    ```
+
+4.  **Authentication:** Authenticate with Yandex Cloud using the YC CLI.
+
+    ```bash
+    yc init
+    ```
+    This command will guide you through the process of obtaining an OAuth token and logging in under the required service account.
+    
+6.  **Terraform Provider Configuration:** Configure Terraform to use the Yandex Cloud provider. Create or edit the `~/.terraformrc` file with the following content:
+
+    ```bash
+    cat > ~/.terraformrc <<EOF
+    provider_installation {
+      network_mirror {
+        url = "https://terraform-mirror.yandexcloud.net/"
+        include = ["registry.terraform.io/*/*"]
+      }
+      direct {
+        exclude = ["registry.terraform.io/*/*"]
+      }
+    }
+    EOF
+    ```
+
+7.  **Environment Variables:** Export the necessary environment variables for Terraform to access your Yandex Cloud resources.
+
+    ```bash
+    export TF_VAR_cloud_id=$(yc config get cloud-id)
+    export TF_VAR_folder_id=$(yc config get folder-id)
+    export TF_VAR_token=$(yc iam create-token)
+    ```
+
+## Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/morheus9/terraform_template.git
+    cd terraform_template
+    ```
+
+## Configuration
+
+Before deploying the infrastructure, you need to configure the variables in the Terraform modules.
+
+1.  **Review Module Variables:** Check the variables defined in each module's `variables.tf` file (if exists) and the `README.md` for specifics.  Pay close attention to required variables.
+
+## Usage
+
+### S3 Bucket Creation
+
+This module creates an S3 bucket in Yandex Object Storage for storing Terraform state or other data.
+
+1.  **Navigate to the S3 module directory:**
+
+    ```bash
+    cd tf/modules/s3
+    ```
+
+2.  **Initialize Terraform:**
+
+    ```bash
+    terraform init
+    ```
+
+3.  **Plan the deployment:**
+
+    ```bash
+    terraform plan
+    ```
+
+4.  **Apply the configuration:**
+
+    ```bash
+    terraform apply
+    ```
+
+5.  **Export S3 Credentials:** After the deployment, export the credentials of your service account to allow access to the S3 bucket.
+
+    ```bash
+    export AWS_ACCESS_KEY_ID=$(terraform output -raw aws_access_key_id)
+    export AWS_SECRET_ACCESS_KEY=$(terraform output -raw aws_secret_access_key)
+    ```
+
+### Kubernetes Cluster Creation
+
+This module deploys a Kubernetes cluster in Yandex Managed Service for Kubernetes.
+
+1.  **Navigate to the root directory:**
+
+    ```bash
+    cd ../../
+    ```
+
+2.  **Initialize Terraform with reconfiguration (important after S3 creation):**
+
+    ```bash
+    terraform init -reconfigure
+    ```
+
+3.  **Plan the deployment:**
+
+    ```bash
+    terraform plan
+    ```
+
+4.  **Apply the configuration:**
+
+    ```bash
+    terraform apply
+    ```
+
+### Connecting to the Kubernetes Cluster
+
+1.  **Get the cluster connection string:** After the deployment is complete, retrieve the command to connect to the Kubernetes cluster.
+
+    ```bash
+      eval "$(terraform output -raw internal_cluster_cmd_str)"
+    ```
+
+2.  **Execute the command:** Copy and paste the output of the above command into your terminal. This configures `kubectl` to communicate with your Yandex Managed Kubernetes cluster.
+
+### Deploying Nginx on Kubernetes and Getting the Public IP
+
+This example shows how to deploy a simple Nginx web server on the Kubernetes cluster and retrieve the public IP address for accessing it.
+
+1.  **Navigate to the Nginx deployment directory:**
+
+    ```bash
+    cd tf/modules/kube
+    ```
+
+2.  **Apply the Nginx deployment:** This command deploys the Nginx deployment, service, and ingress to your Kubernetes cluster.
+
+    ```bash
+    kubectl apply -f nginx.yaml
+    ```
+    
+    This will create:
+    *   A `Deployment` named `nginx-deployment` that runs a single replica of Nginx.
+    *   A `Service` named `nginx-service` that exposes the Nginx deployment on port 80.
+    *   An `Ingress` named `nginx-ingress` that routes external traffic to the `nginx-service`.  The `ingressClassName: "nginx"` specifies that you're using the Nginx ingress controller.
+
+3. **Wait for the Ingress Controller to Assign an IP:** It may take a few minutes for the Yandex Cloud load balancer to provision an external IP address for the Ingress. You can check the status of the Ingress using:
+
+    ```bash
+    kubectl get ingress nginx-ingress
+    ```
+
+    Look at the `ADDRESS` column. If it shows `<none>`, the IP is still being provisioned. Keep checking until a public IP address appears.
+
+4.  **Get the external IP address:**  Retrieve the external IP address assigned to the Nginx ingress using `jsonpath`.
+
+    ```bash
+    kubectl get ingress nginx-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+    ```
+    
+5.  **Access Nginx:** Open your web browser and navigate to the external IP address obtained in the previous step. You should see the default Nginx welcome page. If you don't see the Nginx welcome page, ensure the following:
+    * The Ingress has a public IP address assigned.
+    * Your Yandex Cloud security groups allow inbound traffic on port 80 (HTTP) and port 443 (HTTPS) to the nodes where Nginx is running. The Terraform Kube module attempts to create these rules, but manual verification may be required if you've customized the security groups.
+
+
+### Connect to Virtual Machine
+
+This module creates a virtual machine in Yandex Compute Cloud.
+
+1.  **Navigate to the root directory or your instance module directory:**  If you have a separate module using the `instance` module, navigate to that.  Otherwise, you can adapt the root `tf` directory.
+
+2.  **Make sure you have the required variables defined.**  See `tf/modules/instance/README.md` for details. You'll need a VPC network and subnet. You may need to create those separately if you don't already have them. Also, make sure you have a public SSH key available.
+
+3.  **Initialize Terraform:**
+
+    ```bash
+    terraform init
+    ```
+
+4.  **Plan the deployment:**
+
+    ```bash
+    terraform plan
+    ```
+
+5.  **Apply the configuration:**
+
+    ```bash
+    terraform apply
+    ```
+
+6.  **Connect to the VM:** After the deployment is complete, connect to the virtual machine using SSH.
+
+    ```bash
+    ssh $(terraform output -raw user)@$(terraform output -raw external_ip) -i ~/.ssh/tf-cloud-init
+    ```
+
+    Replace `~/.ssh/tf-cloud-init` with the path to your SSH private key.  The username is typically defined in the variables, such as `ansible`.
+
+## Variables
+
+The following environment variables are used by the Terraform modules:
+
+-   `AWS_ACCESS_KEY_ID`:  Access key ID for accessing the S3 bucket.
+-   `AWS_SECRET_ACCESS_KEY`: Secret access key for accessing the S3 bucket.
+-   `TF_VAR_cloud_id`: Yandex Cloud ID.
+-   `TF_VAR_folder_id`: Yandex Folder ID.
+-   `TF_VAR_token`: Yandex Cloud OAuth token.
+
+You can also redefine variables using the `-var` flag:
+
+```bash
+terraform plan -var="zone=ru-central1-a"
+```
+Or, use a tfvars file:
+```bash
+terraform apply -var-file="testing.tfvars"
+terraform destroy -var-file="testing.tfvars"
+```
+Resourses:
 - [Yandex Object Storage](https://yandex.cloud/ru/docs/storage)
 - [Yandex Managed Service for Kubernetes](https://yandex.cloud/ru/docs/managed-kubernetes)
 - [Setup terraform](https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-quickstart)
 - [Setup terraform backend](https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-state-storage)
 - [K8s from terraform](https://yandex.cloud/ru/docs/managed-kubernetes/operations/kubernetes-cluster/kubernetes-cluster-create)
-
-1. Install **yc** cli:
-```
-curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-```
-2. Get *OAuth* token and log in via the Yandex Cloud console under the required service account:
-```
-yc init
-```
-3. Check the variables of modules
-4. Install Terraform
-```
-snap install terraform --classic
-```
-5. Set up a teraform by specifying a provider:
-```
-nano ~/.terraformrc
-```
-```
-provider_installation {
-  network_mirror {
-    url = "https://terraform-mirror.yandexcloud.net/"
-    include = ["registry.terraform.io/*/*"]
-  }
-  direct {
-    exclude = ["registry.terraform.io/*/*"]
-  }
-}
-```
-6. Export envs:
-```
-export TF_VAR_cloud_id=$(yc config get cloud-id)
-export TF_VAR_folder_id=$(yc config get folder-id)
-export TF_VAR_token=$(yc iam create-token)
-```
-7. Create s3 for state backend
-```
-cd ./tf/modules/s3
-terraform init
-terraform plan
-terraform apply
-```
-8. Export the credentials of your service account with access to S3 bucket:
-```
-export AWS_ACCESS_KEY_ID=$(terraform output -raw aws_access_key_id)
-export AWS_SECRET_ACCESS_KEY=$(terraform output -raw aws_secret_access_key)
-```
-9. Change backend and create other modules
-```
-cd ../..
-terraform init -reconfigure
-terraform apply
-```
-10. Connect to cluster by connect string from *output*
-```
-$(terraform output -raw internal_cluster_cmd_str)
-```
-11. Install test nginx and check
-```
-cd tf/modules/kube/nginx.yaml
-kubectl apply -f nginx.yaml
-kubectl get ingress nginx-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-```
