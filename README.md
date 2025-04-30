@@ -153,8 +153,8 @@ This module deploys a Kubernetes cluster in Yandex Managed Service for Kubernete
 
 ### Connecting to the Kubernetes Cluster
 
- **Get the cluster connection string:** After the deployment is complete, retrieve the command to connect to the Kubernetes cluster.
- 
+-   **Get the cluster connection string:** After the deployment is complete, retrieve the command to connect to the Kubernetes cluster.
+
     ```bash
     eval "$(terraform output -raw internal_cluster_cmd_str)"
     ```
