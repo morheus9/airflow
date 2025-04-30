@@ -249,7 +249,60 @@ Or, use a tfvars file:
 ```bash
 terraform apply -var-file="testing.tfvars"
 ```
+## Variables
+Kubernetes Cluster:
+```terraform
+module "kube" {
+  source     = "./modules/kubernetes"
+  network_id = "enpmff6ah2bvi0k10j66"
 
+  master_locations = [
+    {
+      zone      = "ru-central1-a"
+      subnet_id = "e9b3k97pr2nh1i80as04"
+    },
+    {
+      zone      = "ru-central1-b"
+      subnet_id = "e2laaglsc7u99ur8c4j1"
+    },
+    {
+      zone      = "ru-central1-c"
+      subnet_id = "b0ckjm3olbpmk2t6c28o"
+    }
+  ]
+
+  node_groups = {
+    "yc-k8s-ng-01" = {
+      description = "Kubernetes nodes group 01"
+      fixed_scale = {
+        size = 2
+      }
+    }
+  }
+}
+```
+Instance:
+```terraform
+module "instance" {
+  source           = "./modules/instance"
+  zone            = "ru-central1-a"
+  username        = "ubuntu"
+  vm_name         = "production-vm"
+  platform_id     = "standard-v3"
+  disk_size       = 50
+  scheduling_policy = {
+    preemptible = false
+  }
+}
+```
+S3 Storage:
+```terraform
+module "s3_bucket" {
+  source      = "./modules/s3"
+  bucket_name = "my-production-bucket"
+  region      = "ru-central1"
+}
+```
 ## Clean Up
 
 To destroy the infrastructure created by Terraform, use the following command:
