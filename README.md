@@ -13,7 +13,7 @@ This repository provides a Terraform template for deploying infrastructure on Ya
 - [Configuration](#configuration)
 - [Usage](#usage)
   - [S3 Bucket Creation](#s3-bucket-creation)
-  - [Kubernetes Cluster Creation](#kubernetes-cluster-creation)
+  - [Creation of basic infrastructure modules](#сreation-of-basic-infrastructure-modules)
   - [Deploying Nginx on Kubernetes and Getting the Public IP](#deploying-nginx-on-kubernetes-and-getting-the-public-ip)
   - [Virtual Machine Creation](#virtual-machine-creation)
 - [Variables](#variables)
@@ -122,7 +122,7 @@ This module creates an S3 bucket in Yandex Object Storage for storing Terraform 
     export AWS_SECRET_ACCESS_KEY=$(terraform output -raw aws_secret_access_key)
     ```
 
-### Kubernetes Cluster Creation
+### Creation of basic infrastructure modules
 
 This module deploys a Kubernetes cluster in Yandex Managed Service for Kubernetes.
 
