@@ -14,7 +14,6 @@ This repository provides a Terraform template for deploying infrastructure on Ya
 - [Usage](#usage)
   - [S3 Bucket Creation](#s3-bucket-creation)
   - [Kubernetes Cluster Creation](#kubernetes-cluster-creation)
-  - [Connecting to the Kubernetes Cluster](#connecting-to-the-kubernetes-cluster)
   - [Deploying Nginx on Kubernetes and Getting the Public IP](#deploying-nginx-on-kubernetes-and-getting-the-public-ip)
   - [Virtual Machine Creation](#virtual-machine-creation)
 - [Variables](#variables)
@@ -151,9 +150,7 @@ This module deploys a Kubernetes cluster in Yandex Managed Service for Kubernete
     terraform apply
     ```
 
-### Connecting to the Kubernetes Cluster
-
--   **Get the cluster connection string:** After the deployment is complete, retrieve the command to connect to the Kubernetes cluster.
+5. **Connecting to the Kubernetes Cluster:**
 
     ```bash
     eval "$(terraform output -raw internal_cluster_cmd_str)"
