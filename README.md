@@ -220,7 +220,7 @@ terraform plan -var="zone=ru-central1-a"
 ```
 Or, use a tfvars file:
 ```bash
-terraform apply -var-file="testing.tfvars"
+terraform plan -var-file="testing.tfvars"
 ```
 ## Examples
 K8s Cluster:
