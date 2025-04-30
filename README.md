@@ -250,7 +250,7 @@ Or, use a tfvars file:
 terraform apply -var-file="testing.tfvars"
 ```
 ## Examples
-Kubernetes Cluster:
+K8s Cluster:
 ```terraform
 module "kube" {
   source     = "./modules/kubernetes"
