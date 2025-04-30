@@ -19,8 +19,7 @@ This repository provides a Terraform template for deploying infrastructure on Ya
 - [Variables](#variables)
 - [Examples](#examples)
 - [Clean Up](#clean-up)
-- [Contributing](#contributing)
-- [License](#license)
+- [Resourses](#resourses)
 
 ## Prerequisites
 
@@ -262,7 +261,7 @@ If you used a tfvars file, specify it during the destroy operation:
 ```bash
 terraform destroy -var-file="testing.tfvars"
 ```
-Resourses:
+## Resourses:
 - [Yandex Object Storage](https://yandex.cloud/ru/docs/storage)
 - [Yandex Managed Service for Kubernetes](https://yandex.cloud/ru/docs/managed-kubernetes)
 - [Setup terraform](https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-quickstart)
