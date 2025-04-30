@@ -249,7 +249,7 @@ Or, use a tfvars file:
 ```bash
 terraform apply -var-file="testing.tfvars"
 ```
-## Variables
+## Examples
 Kubernetes Cluster:
 ```terraform
 module "kube" {
