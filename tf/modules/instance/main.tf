@@ -27,7 +27,9 @@ resource "yandex_compute_instance" "vm-1" {
     subnet_id = module.network.subnet_id # Используем output из модуля
     nat       = true                     # Для доступа из интернета
   }
-
+  # Метаданные машины: здесь можно указать скрипт, который запустится при создании ВМ или список SSH-ключей для доступа на ВМ
+  # ssh-keygen -t rsa -C "your_email@example.com" -f ~/.ssh/tf-cloud-init
+  # cat ~/.ssh/tf-cloud-init.pub
   metadata = {
     user-data = <<-EOF
       #cloud-config
